@@ -1,0 +1,27 @@
+{% set neutron_dbuser = pillar['neutron']['dbuser'] %}
+{% set neutron_dbpass = pillar['neutron']['dbpass'] %}
+{% set neutron_dbserver = pillar['neutron']['dbserver'] %}
+{% set neutron_dbname = pillar['neutron']['dbname'] %}
+
+{% set neutron_config = {
+  "keystone_authtoken": {
+    "auth_uri": "http://" + pillar['keystone']['server'] + ":5000/v2.0",
+    "identity_uri": "http://" + pillar['keystone']['server'] + ":35357",
+    "admin_tenant_name": "service",
+    "admin_user": pillar['neutron']['user'],
+    "admin_password": pillar['neutron']['pass'],
+  },
+  "DEFAULT": {
+    "auth_strategy": "keystone",
+    "rpc_backend": "rabbit",
+    "rabbit_host": pillar['rabbitmq']['server'],
+    "rabbit_port": pillar['rabbitmq']['port'],
+    "rabbit_userid":  pillar['rabbitmq']['user'],
+    "rabbit_password":  pillar['rabbitmq']['password'],
+    "core_plugin": "ml2",
+    "service_plugins": "router",
+    "allow_overlapping_ips": "True",
+  },
+  }
+%}
+

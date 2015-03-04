@@ -1,0 +1,16 @@
+{% set glance_dbuser = pillar['glance']['dbuser'] %}
+{% set glance_dbpass = pillar['glance']['dbpass'] %}
+{% set glance_dbserver = pillar['glance']['dbserver'] %}
+{% set glance_dbname = pillar['glance']['dbname'] %}
+
+{% set glance_config = {
+  "database": "connection = mysql://" + glance_dbuser + ":" + glance_dbpass + "@" + glance_dbserver + "/" + glance_dbname,
+  "keystone_authtoken": {
+    "auth_uri": "http://" + pillar['keystone']['server'] + ":5000/v2.0",
+    "identity_uri": "http://" + pillar['keystone']['server'] + ":35357",
+    "admin_tenant_name": "service",
+    "admin_user": pillar['glance']['user'],
+    "admin_password": pillar['glance']['pass'],
+  }
+}
+%}

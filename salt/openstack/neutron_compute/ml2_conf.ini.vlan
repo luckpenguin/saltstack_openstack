@@ -1,0 +1,18 @@
+[ml2]
+type_drivers = vlan
+tenant_network_types = vlan
+mechanism_drivers = openvswitch
+
+[ml2_type_vlan]
+network_vlan_ranges = physnet1:1000:2999
+
+[securitygroup]
+enable_security_group = True
+enable_ipset = True
+firewall_driver = neutron.agent.linux.iptables_firewall.OVSHybridIptablesFirewallDriver
+
+[ovs]
+tenant_network_type = vlan
+integration_bridge = br-int
+network_vlan_ranges = physnet1:1000:2999
+bridge_mappings = physnet1:br-em2

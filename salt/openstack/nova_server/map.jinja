@@ -1,0 +1,45 @@
+{% set nova_dbuser = pillar['nova']['dbuser'] %}
+{% set nova_dbpass = pillar['nova']['dbpass'] %}
+{% set nova_dbserver = pillar['nova']['dbserver'] %}
+{% set nova_dbname = pillar['nova']['dbname'] %}
+
+{% set nova_config = {
+  "database": "connection = mysql://" + nova_dbuser + ":" + nova_dbpass + "@" + nova_dbserver + "/" + nova_dbname,
+  "keystone_authtoken": {
+    "auth_uri": "http://" + pillar['keystone']['server'] + ":5000/v2.0",
+    "identity_uri": "http://" + pillar['keystone']['server'] + ":35357",
+    "admin_tenant_name": "service",
+    "admin_user": pillar['nova']['user'],
+    "admin_password": pillar['nova']['pass'],
+  },
+  "DEFAULT": {
+    "auth_strategy": "keystone",
+    "rpc_backend": "rabbit",
+    "rabbit_host": pillar['rabbitmq']['server'],
+    "rabbit_port": pillar['rabbitmq']['port'],
+    "rabbit_userid":  pillar['rabbitmq']['user'],
+    "rabbit_password":  pillar['rabbitmq']['password'],
+    "my_ip": pillar['nova']['server'],
+    "vncserver_proxyclient_address": "$my_ip",
+    "vnc_enabled": "True",
+    "vncserver_listen": "0.0.0.0",
+    "network_api_class": "nova.network.neutronv2.api.API",
+    "security_group_api": "neutron",
+    "linuxnet_interface_driver": "nova.network.linux_net.LinuxOVSInterfaceDriver",
+    "firewall_driver": "nova.virt.firewall.NoopFirewallDriver",
+  },
+  "glance": {
+    "host": pillar['glance']['server'],
+  },
+  "neutron": {
+    "url": "http://" + pillar['neutron']['server'] + ":9696",
+    "auth_strategy": "keystone",
+    "admin_auth_url": "http://" + pillar['keystone']['server'] + ":35357/v2.0",
+    "admin_tenant_name": "service",
+    "admin_username": pillar['neutron']['user'],
+    "admin_password": pillar['neutron']['pass'],
+    "service_metadata_proxy": "True",
+    "metadata_proxy_shared_secret": pillar['neutron']['metadata_proxy_shared_secret'],
+  },
+}
+%}
